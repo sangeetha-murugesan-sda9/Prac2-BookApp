@@ -1,0 +1,28 @@
+version: '3.8'
+
+# audit isn't given a "ports" mapping to the host on purpose - it should
+# only be reachable from inside the compose network, by the api. the
+# frontend still runs outside docker (npm run dev) for the demo, kept
+# simple since containerizing it wouldn't add anything to the security
+# story we're telling.
+# note: no volumes for audit's sqlite file - it resets when the
+# container is rebuilt. fine for a demo. the api service now talks to
+# a hosted Supabase Postgres database instead of a local file, so its
+# data persists independently of this compose stack entirely.
+services:
+  audit:
+    build: ./services/audit
+    expose:
+      - "5000"
+
+  api:
+    build: ./services/api
+    ports:
+      - "4000:4000"
+    environment:
+      - AUDIT_SERVICE_URL=http://audit:5000
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+    depends_on:
+      - audit
