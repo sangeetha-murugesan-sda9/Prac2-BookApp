@@ -11,7 +11,7 @@
   "dependencies": {
     "better-sqlite3": "^12.2.0",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.22.3"
   },
   "devDependencies": {
     "jest": "^29.7.0",
